@@ -1,0 +1,64 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+//定义构建的组
+group ="org.wltea.analyzer"
+//定义构建的版本
+version = "1.0.1"
+//源代码编译选项
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+[
+	compileJava,
+	compileTestJava,
+	javadoc
+]*.options*.encoding = 'UTF-8'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+jar{
+	includes ["**.dic"]
+}
+
+
+sourceSets {
+	main {
+		java {
+			srcDir "src/main/java"
+		}
+		resources {
+			srcDir "src/main/java"
+			srcDir "src/main/resources"
+		}
+	}
+}
+dependencies {
+	compile(
+		"org.apache.lucene:lucene-core:${lucene_version}",
+		"org.apache.lucene:lucene-analyzers-common:${lucene_version}",
+		"org.apache.lucene:lucene-queries:${lucene_version}",
+		"org.apache.lucene:lucene-queryparser:${lucene_version}",
+	)
+	testCompile ()
+}
+
+task sourceJar (type : Jar) {
+	classifier = "sources"
+	from sourceSets.main.allSource
+}
+
+task javadocJar (type: Jar, dependsOn: javadoc) {
+	classifier = "javadoc"
+	from javadoc.destinationDir
+}
+
+eclipse{
+	jdt{
+		sourceCompatibility = 1.7
+		targetCompatibility = 1.7
+	}
+}
